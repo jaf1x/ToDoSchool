@@ -1,24 +1,37 @@
 <script setup>
-import { ClockIcon, ListBulletIcon, ChartBarIcon } from '@heroicons/vue/24/outline'
+import { ref } from 'vue'
+import {
+  ClockIcon,
+  ListBulletIcon,
+  ChartBarIcon,
+  AdjustmentsHorizontalIcon
+} from '@heroicons/vue/24/outline'
+import { PAGE_TIMELINE, PAGE_ACTIVITES, PAGE_PROGRESS, PAGE_SETTINGS } from './constants'
+import NavItems from './NavItems.vue'
+
+defineProps(['currentPage'])
+const emit = defineEmits(['navigate'])
+
+const navItems = {
+  [PAGE_TIMELINE]: ClockIcon,
+  [PAGE_ACTIVITES]: ListBulletIcon,
+  [PAGE_PROGRESS]: ChartBarIcon,
+  [PAGE_SETTINGS]: AdjustmentsHorizontalIcon
+}
 </script>
 <template>
   <nav class="sticky right-0 z-10">
-    <ul class="menu p-4 overflow-y-auto w-20 bg-base-100 border-r">
-      <li class="flex-1">
-        <a class="flex flex-col items-center p-2 capitalize h-20" href="#timeline">
-          <ClockIcon class="h-6 w-6" /> timeline
-        </a>
-      </li>
-      <li class="flex-1">
-        <a class="flex flex-col items-center p-2 capitalize h-20" href="#activities">
-          <ListBulletIcon class="h-6 w-6" /> activities
-        </a>
-      </li>
-      <li class="flex-1">
-        <a class="flex flex-col items-center p-2 capitalize h-20" href="#progress">
-          <ChartBarIcon class="h-6 w-6" /> progress
-        </a>
-      </li>
+    <ul class="menu p-4 w-20 overflow-y-auto text-sm bg-base-100 border-r items-center">
+      <NavItems
+        class="mr-1"
+        v-for="(icon, page) in navItems"
+        :key="page"
+        :href="`#${page}`"
+        :class="{ 'bg-gray-200 pointer-events-none': page === currentPage }"
+        @click="emit('navigate', page)"
+      >
+        <component :is="icon" class="h-10 w-6" /> {{ page }}
+      </NavItems>
     </ul>
   </nav>
 </template>
